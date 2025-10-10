@@ -1,13 +1,342 @@
 # Introduction
-Description of the project
+This week we will be implementing Smith-Waterman. This is a dynamic programming algorithm used for local sequence alignment. 
+
+As a reminder, the scoring for Smith-Waterman only uses the scores from the positions above, left, and above-left of the current position in the matrix as below:
+
+<center><img src="./figures/Smith-Waterman_scoring.png"></center>
+
+For traceback, you will need to keep track of the direction of the arrows in a matrix and then begin traceback from the maximum value.
+
+# Smith-Waterman Algorithm Implementation Activity
+## Introduction
+
+Pairwise sequence alignment is a fundamental technique in bioinformatics used to compare two biological sequences, such as DNA, RNA, or proteins. It helps identify regions of similarity that may indicate functional, structural, or evolutionary relationships between the sequences.
+
+The brute force method for sequence alignment, which involves comparing every possible alignment, is highly inefficient. For two sequences of length m and n, the time complexity would be \(T(m,n) = O(mn \cdot 2^{m+n})\), making it impractical for longer sequences.
+
+Dynamic programming offers a more efficient solution. It breaks down the problem into smaller subproblems and stores their solutions to avoid redundant computations. This approach reduces the time complexity to \(O(mn)\).
+
+The Smith-Waterman algorithm is a dynamic programming approach for local sequence alignment. It identifies the optimal local alignment between two sequences by comparing all possible pairs of segments from the sequences and finding the best-scoring alignment.
 
 # Pseudocode
 Put pseudocode in this box:
 
 ```
-Some pseudocode here
+## global values:
+END = 0
+DIAG = 1
+UP = 2
+LEFT = 3
+
+## Data structures:
+Our matrix_struct will contain:
+    H/scores: np.array (n x m) of column segment size m (indexed by "i") and 
+          row segment size n (indexed by "j") of int that contain the scores for the matrix
+          
+    direction: np.array (n x m) that indicates direction where max "score" came from (integer 1-3, can be DIAG,UP,LEFT)
+    
+    Start_trace/Max_value: isn't this going to be the value in matrix[col_n,row_m]?  
+         No -- it could be max value in matrix[col_n,0:row_m] or
+                max value of matrix[0:col_n,row_m] if we were matching subset strings?
+    
+There will be another structure that contains the alignment path (traceback_matrix):
+it will be indexed by "k"
+alignment_path is an array of structures that contain:
+    pos = position into matrix array where:(i,j) = pos[0],pos[1]
+    dir = direction from where score came from can be UP,LEFT,DIAG
+    scr = alignment score at current position in the path
+
+##functions needed for project according to Marcus:
+def cal_score(matrix, seq1, seq2, i, j, match, mismatch, gap)
+
+def traceback(seq1, seq2, traceback_matrix, maximum_position):
+
+def smith_waterman(seq1, seq2, match=1, mismatch=-1, gap=-1):
+
+and ...
+SmithWaterman(seq1, seq2, match, mismatch, gap)
+    Initialize [len(seq1)+1] x [len(seq2)+1] numpy array as scoring matrix with first column and row equal to 0
+    
+    Fill scoring matrix (score_matrix) and Traceback matrix, record the position with max score (max_pos):
+    for i in each row number:
+        for j in each column number:
+            S[i][j] = max( S[i-1][j-1] + compute_diag_score, S[i-1][j] + gap_score, H[i][j-1] + gap_score, 0 )
+            T[i][j] = direction of max( S[i-1][j-1] + compute_diag_score, S[i-1][j] + gap_score, S[i][j-1] + gap_score, 0 )
+            
+
+Driver calls 
+seq1 = 'TACTTAG'
+seq2 = 'CACATTAA'
+
+aligned_seq1, aligned_seq2, score_matrix = smith_waterman(seq1,seq2)
+
+print (aligned_seq1)
+print (aligned_seq2)
+print (score_matrix)
+
+############################# Code from Marcus - this is in Project05.Rmd
+def cal_score(matrix, seq1, seq2, i, j, match, mismatch, gap):
+    '''Calculate score for position (i,j) in scoring matrix, also record move to trace back
+    
+    Args:
+        matrix (numpy array): scoring matrix
+        seq1 (str): sequence 1
+        seq2 (str): sequence 2
+        i (int): current row number
+        j (int): current column number
+        
+    Returns:
+        score in position (i,j)    
+        move to trace back: 0-END, 1-DIAG, 2-UP, 3-LEFT
+        
+    Pseudocode:
+        Calculate scores based on upper-left, up, and left neighbors:
+            diag_score = upper-left + (match or mismatch)
+            up_score = up + gap
+            left_score = left + gap
+        score = max(0, diag_score, up_score, left_score)
+        traceback = maximum direction or end
+        
+        return(score)
+    '''
+    pass
+    
 ```
 
+```{python}
+def traceback(seq1, seq2, traceback_matrix, maximum_position):
+    '''Find the optimal path through scoring marix
+        
+        diagonal: match/mismatch
+        up: gap in seq1
+        left: gap in seq2
+        
+    Args:
+        seq1 (str) : First sequence being aligned
+        seq2 (str) : Second sequence being aligned
+        traceback_matrix (numpy array): traceback matrix
+        maximum_position (tuple): starting position to trace back from
+        
+    Returns:
+        aligned_seq1 (str): e.g. GTTGAC
+        aligned_seq2 (str): e.g. GTT-AC
+        
+    Pseudocode:
+        while current_move != END:
+            current_move = traceback_matrix[current_row][current_col]
+            if current_move == DIAG:
+                ...
+            elif current_move == UP:
+                ...
+            elif current_move == LEFT:
+                ...
+            
+    '''
+    pass
+            
+```
+
+```{python}
+def smith_waterman(seq1, seq2, match=1, mismatch=-1, gap=-1):
+    '''Smith-Waterman algorithm for local alignment
+    
+    Args:
+        seq1 (str): input seq 1
+        seq2 (str): input seq 2
+        match: default = +1
+        mismatch: default = -1
+        gap: default = -1
+    
+    Returns:
+        aligned_seq1 (str)
+        aligned_seq2 (str)
+        score_matrix (numpy array): scoring matrix
+    '''
+    pass
+    
+# Example from slides
+seq1 = 'TACTTAG'
+seq2 = 'CACATTAA'
+
+aligned_seq1, aligned_seq2, score_matrix = smith_waterman(seq1,seq2)
+
+print (aligned_seq1)
+print (aligned_seq2)
+print (score_matrix)
+
+Expected output:
+AC-TTA
+ACATTA
+[[0 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 1 1 0 0]
+ [0 0 1 0 1 0 0 2 1]
+ [0 1 0 2 1 0 0 1 1]
+ [0 0 0 1 1 2 1 0 0]
+ [0 0 0 0 0 2 3 2 1]
+ [0 0 1 0 1 1 2 4 3]
+ [0 0 0 0 0 0 1 3 3]]
+############################# End Code from Marcus:
+
+############################# Text from Marcus:
+
+## Activity Overview
+
+In this activity, you will implement the Smith-Waterman algorithm for local sequence alignment. The algorithm consists of two main parts:
+
+Scoring matrix calculation
+Traceback for optimal alignment reconstruction
+
+The pseudocode for the Smith-Waterman algorithm is as follows:
+
+$$
+\begin{aligned}
+& \text{Initialize scoring matrix } H \text{ with zeros} \\
+& \text{For } i \text{ from } 1 \text{ to } m: \\
+&     \text{For } j \text{ from } 1 \text{ to } n: \\
+&         H[i][j] = \max \begin{cases}
+&             0 \\
+&             H[i-1][j-1] + \text{match/mismatch score} \\
+&             H[i-1][j] + \text{gap penalty} \\
+&             H[i][j-1] + \text{gap penalty}
+&         \end{cases} \\
+& \text{Find the highest score in } H \text{ and its position} \\
+& \text{Perform traceback from the highest score position} \\
+& \text{Return the optimal local alignment}
+\end{aligned}
+$$
+
+## Instructions
+
+Working in pairs, implement the Smith-Waterman algorithm using Python. Your implementation should include:
+
+1. A function to calculate the scoring matrix (`cal_score`)
+2. A function to perform the traceback and reconstruct the optimal alignment (`traceback`)
+3. A dynamic scoring strategy that allows for customizable gap penalties and match/mismatch scores (`smith_waterman`)
+
+## Follow these steps:
+
+### Implement the scoring matrix calculation function:
+
+smith_waterman (matrix, seq1, seq2, mismatch_penalty, gap_penalty)
+
+    seq1 = column (vertical) 
+    seq2 = row (horizontal)
+    final_score = 0
+    final_score_pos = [0,0]
+    
+    matrix -- initialize with zeros -- (matrix [0:n][0:m])
+    
+    n = len(seq1)
+    m = len(seq2)
+    for i 0 to n:
+        for j to m:
+            new_score = cal_score(matrix, seq1, seq2, i, j, mismatch_penalty, gap_pentalty) 
+            if final_score < new_score) 
+                final_score = new_score
+                final_score_pos = [i, j]
+                
+    return(matrix, final_score_pos[0],final_score_pos[1])
+    
+
+1. Initialize the matrix with zeros
+2. Fill the matrix using the Smith-Waterman algorithm
+3. Return the completed matrix and the position of the highest score
+
+### Implement the traceback function
+
+1. Start from the highest score position
+2. Trace back through the matrix to reconstruct the optimal alignment
+3. Return the aligned sequences and the alignment score
+
+def max_score(matrix)
+
+    len(matrix). -- need n and m
+    
+    max_value = 0
+    
+    for i 0 to n
+        for j 0 to m    
+            cur = current_value(matrix[i][j])
+            if max_value < cur: max_value = max(matrix(row))
+        
+    return(max_value, i, j)
+    
+
+def traceback (seq1, seq2, matrix, maximum_position)
+     '''Find the optimal path through scoring marix
+        
+        diagonal: match/mismatch
+        up: gap in seq1
+        left: gap in seq2
+        
+    Args:
+        seq1 (str) : First sequence being aligned
+        seq2 (str) : Second sequence being aligned
+        traceback_matrix (numpy array): traceback matrix
+        
+        maximum_position (tuple): starting position to trace back from
+        
+    Returns:
+        aligned_seq1 (str): e.g. GTTGAC
+        aligned_seq2 (str): e.g. GTT-AC
+        
+    Pseudocode:
+        current_move = traceback_matrix[current_row][current_col]
+        while current_move != END:
+            if current_move == DIAG:
+                align_seq1 += seq1[current_row] # adding one character!
+                align_seq2 += seq2[current_col]
+                current_row = current_row-1
+                current_col = current_col-1
+                
+            elif current_move == UP:
+                align_seq1 += seq1[current_row]
+                align_seq2 += "-" # space here
+                current_row = current_row-1
+                
+            elif current_move == LEFT:
+                align_seq1 += "-" # space here
+                align_seq2 += seq2[current_col]
+                current_col = current_col-1
+            current_move = traceback_matrix[current_row][current_col]
+        
+        return (align_seq1,align_seq2)
+    ''' 
+
+### Implement a main function that:
+
+1. Takes two sequences as input
+2. Accepts parameters for match score, mismatch penalty, and gap penalty
+3. Calls the scoring and traceback functions
+4. Prints the aligned sequences and the alignment score
+
+ Example from slides
+seq1 = 'TACTTAG'
+seq2 = 'CACATTAA'
+
+aligned_seq1, aligned_seq2, score_matrix = smith_waterman(seq1,seq2,score,mismatch_pen,gap_pen)
+
+print (aligned_seq1)
+print (aligned_seq2)
+print (score_matrix)
+
+Expected output:
+AC-TTA
+ACATTA
+[[0 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 1 1 0 0]
+ [0 0 1 0 1 0 0 2 1]
+ [0 1 0 2 1 0 0 1 1]
+ [0 0 0 1 1 2 1 0 0]
+ [0 0 0 0 0 2 3 2 1]
+ [0 0 1 0 1 1 2 4 3]
+ [0 0 0 0 0 0 1 3 3]]
+
+Test your implementation with various input sequences and scoring parameters
+
+############################# END text from Marcus
+```
+ 
 # Successes
 Description of the team's learning points
 
