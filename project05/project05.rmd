@@ -29,7 +29,7 @@ import numpy as np
 
 
 ```{python}
-def cal_score (matrix, seq1,seq2,i,j,match,mismatch,gap): 
+def cal_score (matrix, seq1,seq2,i,j,match=1,mismatch=-1,gap=-1): 
   ''' Calculate score for position (i,j) in scoring matrix,
       also record move to trace back, and return this to the calling 
       function.  Seq1 and seq2 are the strings being compared. (i,j) is 
@@ -174,7 +174,7 @@ def smith_waterman(seq1, seq2, match=1, mismatch=-1, gap=-1):
   # fill the Score matrix and Trace matrix with scores and directions
   for i in range(1,n):
     for j in range(1,m):
-      new_score, trace=cal_score(matrix,seq1,seq2,i,j,match,mismatch,gap)
+      new_score, trace=cal_score(matrix,seq1,seq2,i,j)
       matrix[i][j] = new_score
       Tmatrix[i][j] = trace
       # check for max score
@@ -195,7 +195,7 @@ def smith_waterman(seq1, seq2, match=1, mismatch=-1, gap=-1):
 seq1 = 'TACTTAG'
 seq2 = 'CACATTAA'
 matrix, align1, align2 = smith_waterman(seq1, seq2)
-print("Calculate alignment for {seq1} and {seq2}:")
+print(f"Calculate alignment for {seq1} and {seq2}:")
 print(align1)
 print(align2)
 print("Matrix:")
