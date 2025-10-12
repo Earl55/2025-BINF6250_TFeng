@@ -29,7 +29,7 @@ import numpy as np
 
 
 ```{python}
-def cal_score (matrix, seq1,seq2,i,j,match=1,mismatch=-1,gap=-1): 
+def cal_score (matrix, seq1,seq2,i,j): 
   ''' Calculate score for position (i,j) in scoring matrix,
       also record move to trace back, and return this to the calling 
       function.  Seq1 and seq2 are the strings being compared. (i,j) is 
