@@ -338,14 +338,15 @@ Test your implementation with various input sequences and scoring parameters
 ```
  
 # Successes
-Description of the team's learning points
+We successfully implemented the Smith-Waterman algorithm for local sequence alignment. A key success was the correct implementation of the dynamic programming logic in the matrix-filling step. For each cell H[i,j], our cal_score function correctly calculated the score by taking the maximum value among four possibilities: a score of zero (for local alignment), or the scores derived from a diagonal move (match/mismatch), an upward move (gap), or a leftward move (gap). We also successfully kept track of the position of the highest score in the matrix, which served as the starting point for the traceback.
 
 # Struggles
-Description of the stumbling blocks the team experienced
+One of the most significant challenges we encountered was ensuring consistent handling of indices between the sequences and the scoring/traceback matrices. We spent a considerable amount of time clarifying the relationship between the row and column variables across our different functions.
+Another struggle was correctly implementing the traceback logic. Since we built the aligned sequences by moving backward from the end of the alignment to its start, the resulting strings were in reverse order. 
 
 # Personal Reflections
-## Group Leader
-Group leader's reflection on the project
+## Group Leader - Tiange
+This project was an excellent practical exercise in understanding the power of dynamic programming. It was insightful to see how a complex problem like finding the best local alignment can be solved by breaking it down into a series of simple, recursive calculations at each cell in a matrix. Jackie's clear and efficient pseudocode served as an excellent theoretical map for our implementation. Translating it into functional code revealed the importance of careful attention to detail, particularly with "off-by-one" errors in indexing, as our matrix dimensions were len(seq) + 1. In summary, our collaboration was very smooth, enabling us to successfully complete the assignment while also pinpointing common sources of error.
 
 ## Other member
 Other members' reflections on the project
