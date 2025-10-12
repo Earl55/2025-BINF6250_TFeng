@@ -1,6 +1,6 @@
 ---
 title: "Project 05: Pairwise Alignments"
-author: Tiang Fong, Jacqueline Caldwell, Little Butler
+author: Tiang Feng, Jacqueline Caldwell, Little Butler
 date: "`r format(Sys.time(), '%Y%m%d')`"
 output:
   github_document:
